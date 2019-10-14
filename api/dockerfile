@@ -1,0 +1,11 @@
+FROM python:3.7
+
+RUN pip install --upgrade pip && pip install newspaper3k geotext flask flask-cors numpy requests
+
+COPY ./src /src
+
+ENV FLASK_APP=/src/app.py
+
+EXPOSE 5000
+
+ENTRYPOINT ["flask", "run", "--host=0.0.0.0"]
