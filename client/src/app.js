@@ -4,10 +4,10 @@ new Vue({
 	map: null,
 	tileLayer: null,
 	articleurl: null,
+	articletext: '== Article extracted text ==',
   },
   mounted() {
 	this.initMap();
-	this.initLayers();
   },
   methods: {
 	initMap() {
@@ -20,24 +20,21 @@ new Vue({
 		);
 		this.tileLayer.addTo(this.map);
 	},
-	initLayers() {
-
-	},
 	articlechanged() {
 	  eau = btoa(this.articleurl)
-	  m = this.map
+	  vm = this
 	  var request = new XMLHttpRequest()
-	  request.open('GET', process.env.GEOARTICLE_URL+'/geo/'+eau, true)
+	  request.open('GET', 'http://192.168.0.120:5000/geo/'+eau, true)
 
 		request.onload = function() {
 		  var data = JSON.parse(this.response)
 		  
-		  cities = data.ret
+		  vm.articletext = data.ret['article']
+		  cities = data.ret['cities']
 		  for (var city in cities) 
 		  {
-			  console.log(cities[city])
 			  leafletObject = L.marker(cities[city]).bindPopup(city);
-			  leafletObject.addTo(m);
+			  leafletObject.addTo(vm.map);
 		  }
 		}
 	  request.send()
