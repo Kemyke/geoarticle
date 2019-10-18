@@ -9,8 +9,8 @@
     <link rel="stylesheet" type="text/css" href="main.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.2.0/dist/leaflet.css">
   </head>
-<body class="d-flex flex-column" style="overflow-y: hidden;">
-	<div id="app" class="container-fluid d-flex flex-column flex-fill" style="max-height:100vh">	
+<body class="d-flex flex-column" style="overflow-y: auto;">
+	<div id="app" class="container-fluid d-flex flex-column flex-fill">	
 <nav class="navbar navbar-expand-md">
   <a class="navbar-brand" href="#">GeoArticle</a>
   <button class="navbar-toggler navbar-dark" type="button" data-toggle="collapse" data-target="#main-navigation">
@@ -24,9 +24,6 @@
       <li class="nav-item">
         <a class="nav-link" href="#">About</a>
       </li>
-      <li class="nav-item">
-        <a class="nav-link" href="#">Contact</a>
-      </li>
     </ul>
   </div>
 </nav>
@@ -35,8 +32,8 @@
                         <div class="col-9">
                           <div id="map" class="map"></div>
                         </div>
-                        <div class="col-3 border bg-light rounded" style="max-height:100vh">
-			  <div id="article" class="article" style="max-height:100vh">
+                        <div class="col-3 border bg-light rounded">
+			  <div id="article" class="article" style="max-height: calc(100vh - 70px)">
                             {{ articletext  }}
 			  </div>
                         </div>

@@ -1,6 +1,6 @@
 FROM python:3.7
 
-RUN pip install --upgrade pip && pip install newspaper3k geotext flask flask-cors numpy requests
+RUN pip install --upgrade pip && pip install newspaper3k geotext flask flask-cors numpy requests haversine
 
 COPY ./src /src
 

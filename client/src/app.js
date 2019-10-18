@@ -29,6 +29,7 @@ new Vue({
 		request.onload = function() {
 		  var data = JSON.parse(this.response)
 		  
+		  vm.map.setView([data.ret['centroid'][0], data.ret['centroid'][1]], data.ret['init_zoom_level']);
 		  vm.articletext = data.ret['article']
 		  cities = data.ret['cities']
 		  for (var city in cities) 

@@ -9,6 +9,7 @@ import requests
 import json
 import os
 import time
+from haversine import haversine, Unit
 
 app = Flask(__name__)
 CORS(app)
@@ -40,6 +41,30 @@ def mapquest_batch_geocode(cities):
         ret[result["providedLocation"]["location"]] = [result["locations"][0]["latLng"]["lat"], result["locations"][0]["latLng"]["lng"]]
      return ret
 
+def calculate_centroid(cities):
+    x = [p[0] for p in cities]
+    y = [p[1] for p in cities]
+    centroid = (sum(x) / len(cities), sum(y) / len(cities))
+    return centroid
+
+def get_initial_zoom(cities):
+    maxd = 0
+    for city1 in cities:
+        for city2 in cities:
+            d = haversine(city1, city2)
+            if(d > maxd):
+                maxd = d
+    if maxd > 10000:
+        return 3
+    if maxd > 5000:
+        return 4
+    if maxd > 2500:
+        return 5
+    if maxd > 1200:
+        return 6
+    if maxd > 600:
+        return 7
+    return 8
 
 @app.route('/geo/<articleurl>')
 def geo(articleurl):
@@ -52,6 +77,8 @@ def geo(articleurl):
 
     ret = {}
     ret['cities'] = mapquest_batch_geocode(cities)
+    ret['centroid'] = calculate_centroid(ret['cities'].values())
+    ret['init_zoom_level'] = get_initial_zoom(ret['cities'].values())
     #ret['cities']={}
     #for city in cities:
     #    coord = locationiq_geocode(city)
