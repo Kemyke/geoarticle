@@ -38,7 +38,8 @@ def mapquest_batch_geocode(cities):
      results = json.loads(response.text)
      ret = {}
      for result in results['results']:
-        ret[result["providedLocation"]["location"]] = [result["locations"][0]["latLng"]["lat"], result["locations"][0]["latLng"]["lng"]]
+        if len(result["locations"]) > 0:
+            ret[result["providedLocation"]["location"]] = [result["locations"][0]["latLng"]["lat"], result["locations"][0]["latLng"]["lng"]]
      return ret
 
 def calculate_centroid(cities):
@@ -76,9 +77,10 @@ def geo(articleurl):
     cities = numpy.unique(places.cities).tolist()
 
     ret = {}
-    ret['cities'] = mapquest_batch_geocode(cities)
-    ret['centroid'] = calculate_centroid(ret['cities'].values())
-    ret['init_zoom_level'] = get_initial_zoom(ret['cities'].values())
+    if len(cities) > 0:
+        ret['cities'] = mapquest_batch_geocode(cities)
+        ret['centroid'] = calculate_centroid(ret['cities'].values())
+        ret['init_zoom_level'] = get_initial_zoom(ret['cities'].values())
     #ret['cities']={}
     #for city in cities:
     #    coord = locationiq_geocode(city)

@@ -4,7 +4,9 @@ new Vue({
 	map: null,
 	tileLayer: null,
 	articleurl: null,
-	articletext: '== Article extracted text ==',
+	articletext: null,
+	marked_articletext: '== Article extracted text ==',
+	markers: [],
   },
   mounted() {
 	this.initMap();
@@ -19,23 +21,37 @@ new Vue({
 			}
 		);
 		this.tileLayer.addTo(this.map);
+		vm = this
+                this.map.on('popupopen', function (e) {
+			vm.marked_articletext = vm.articletext.split(e.popup._source._city).join("<mark>"+e.popup._source._city+"</mark>");
+                });
+
 	},
 	articlechanged() {
 	  eau = btoa(this.articleurl)
 	  vm = this
 	  var request = new XMLHttpRequest()
-	  request.open('GET', 'http://192.168.0.120:5000/geo/'+eau, true)
+
+	  for (var marker in this.markers)
+	  this.markers.forEach(function (marker, index) {	
+             vm.map.removeLayer(marker);
+	  });
+	  request.open('GET', 'https://geoarticleapi.kemy.cc/geo/'+eau, true)
 
 		request.onload = function() {
 		  var data = JSON.parse(this.response)
 		  
 		  vm.map.setView([data.ret['centroid'][0], data.ret['centroid'][1]], data.ret['init_zoom_level']);
 		  vm.articletext = data.ret['article']
+	          vm.marked_articletext = vm.articletext
 		  cities = data.ret['cities']
 		  for (var city in cities) 
 		  {
-			  leafletObject = L.marker(cities[city]).bindPopup(city);
+			  marker = L.marker(cities[city])
+			  leafletObject = marker.bindPopup(city);
+			  leafletObject._city = city;
 			  leafletObject.addTo(vm.map);
+			  vm.markers.push(marker);
 		  }
 		}
 	  request.send()
