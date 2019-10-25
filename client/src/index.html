@@ -29,7 +29,7 @@
       <div class="collapse navbar-collapse" id="main-navigation">
         <ul class="navbar-nav">
           <li class="nav-item">
-            <a class="nav-link" href="about.html">About</a>
+            <a class="nav-link" href="#" data-toggle="modal" data-target="#exampleModal">About</a>
           </li>
         </ul>
       </div>
@@ -47,7 +47,29 @@
       </div>
     </div>
   </div>
+
+  <!-- Modal -->
+  <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">About GeoArticle</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+		Extract article text with <a href="https://github.com/codelucas/newspaper" target="_blank">Newspaper</a> then search for location names in it with <a href="https://github.com/elyase/geotext">GeoText</a>!
+		Then visualize it with the help of <a href="https://developer.mapquest.com/" target="_blank">MapQuest</a> and <a href="https://www.openstreetmap.org" target="_blank">OpenStreetMap</a>.
+	  <br/><br/>
+	  Github <a href="https://github.com/Kemyke/geoarticle" target="_blank">source</a>
+	  <br/>
+	  Icons made by <a href="https://www.flaticon.com/authors/smashicons" title="Smashicons" target="_blank">Smashicons</a> from <a href="https://www.flaticon.com/" title="Flaticon" target="_blank">www.flaticon.com</a>
+        </div>
+      </div>
+    </div>
   </div>
+
   <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
     integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
     crossorigin="anonymous"></script>
