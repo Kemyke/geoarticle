@@ -10,6 +10,18 @@ import json
 import os
 import time
 from haversine import haversine, Unit
+import logging
+import logging.handlers as handlers
+
+logger = logging.getLogger('geoarticle')
+logger.setLevel(logging.DEBUG)
+
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+
+logHandler = handlers.TimedRotatingFileHandler('/src/logs/geoarticle.log', when='midnight', interval=1)
+logHandler.setLevel(logging.DEBUG)
+logHandler.setFormatter(formatter)
+logger.addHandler(logHandler)
 
 app = Flask(__name__)
 CORS(app)
@@ -40,6 +52,8 @@ def mapquest_batch_geocode(cities):
      for result in results['results']:
         if len(result["locations"]) > 0:
             ret[result["providedLocation"]["location"]] = [result["locations"][0]["latLng"]["lat"], result["locations"][0]["latLng"]["lng"]]
+        else:
+            logger.info('Geocode with no result: ' + result["providedLocation"]["location"])
      return ret
 
 def calculate_centroid(cities):
@@ -70,21 +84,37 @@ def get_initial_zoom(cities):
 @app.route('/geo/<articleurl>')
 def geo(articleurl):
     url=base64.b64decode(articleurl).decode('utf-8')
+    logger.debug('geoparse '+url)
     article = Article(url)
-    article.download()
-    article.parse()
-    places = GeoText(article.text)
-    cities = numpy.unique(places.cities).tolist()
-
     ret = {}
+    cities = []
+    try:
+        article.download()
+        article.parse()
+        places = GeoText(article.text)
+        cities = numpy.unique(places.cities).tolist()
+        ret['article']=article.text
+    except:
+        ret['article'] = 'Article error'
+        logger.info('url error: '+url)
+
     if len(cities) > 0:
         ret['cities'] = mapquest_batch_geocode(cities)
-        ret['centroid'] = calculate_centroid(ret['cities'].values())
-        ret['init_zoom_level'] = get_initial_zoom(ret['cities'].values())
+        if(len(ret['cities']) > 0):
+            ret['centroid'] = calculate_centroid(ret['cities'].values())
+            ret['init_zoom_level'] = get_initial_zoom(ret['cities'].values())
+        else:
+            ret['centroid'] = (41.1621376, -8.6569731)
+            ret['init_zoom_level'] = 5
+    else:
+        logger.info('No cities found in: ' + url)
+        ret['cities'] = {}
+        ret['centroid'] = (41.1621376, -8.6569731)
+        ret['init_zoom_level'] = 5
+        
     #ret['cities']={}
     #for city in cities:
     #    coord = locationiq_geocode(city)
     #    if len(coord) > 0:
     #        ret['cities'][city] = coord
-    ret['article']=article.text
     return jsonify(ret=ret) 

@@ -2,9 +2,11 @@ FROM python:3.7
 
 RUN pip install --upgrade pip && pip install newspaper3k geotext flask flask-cors numpy requests haversine
 
-COPY ./src /src
+RUN mkdir -p /src/logs
 
 ENV FLASK_APP=/src/app.py
+
+COPY ./src /src
 
 EXPOSE 5000
 
