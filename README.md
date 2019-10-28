@@ -2,7 +2,7 @@
 
 ## Overview
 
-During our trip to Porto we read a lot of articles with the best locations around. None of the articles contain a map so it was hard to find which cities are in the
+During our trip to Porto we read articles about the best locations around. None of the articles contain a map so it was hard to find which cities are in the
 same direction or close to each other. It was a pain to find all the places on Google Maps.
 This project came to life to solve this problem. Just paste the article URL and location names will be extracted and visualized.
 
